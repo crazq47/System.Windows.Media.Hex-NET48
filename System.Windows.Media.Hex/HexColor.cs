@@ -18,7 +18,7 @@ namespace System.Windows.Media.Hex
     /// </remarks>
     [Localizability(LocalizationCategory.None, Readability = Readability.Unreadable)]
     [TypeConverter(typeof(ColorConverter))]
-    public struct HexColor : IEquatable<HexColor>, IFormattable, IComparable<string>, IEquatable<string>, IComparable<uint>, IEquatable<uint>
+    public struct HexColor : IEquatable<HexColor>, IFormattable, IComparable<Color>, IEquatable<Color>, IComparable<string>, IEquatable<string>, IComparable<uint>, IEquatable<uint>
     {
         private string Code;
 
@@ -454,6 +454,18 @@ namespace System.Windows.Media.Hex
         }
 
         /// <summary>
+        /// Determines whether the current <see cref="HexColor"/> object is equal to the specified <see cref="Color"/> object.
+        /// </summary>
+        /// <param name="color">The Color object to compare with the current <see cref="HexColor"/> object.</param>
+        /// <returns>
+        /// <see langword="true"/> if the specified <see cref="Color"/> object is equal to the current <see cref="HexColor"/> object; otherwise, <see langword="false"/>.
+        /// </returns>
+        public bool Equals(Color color)
+        {
+            return Code.Equals(color.ToString());
+        }
+
+        /// <summary>
         /// Determines whether the specified <see cref="UInt32"/> representation of a hexadecimal color is equal to the current <see cref="HexColor"/>.
         /// </summary>
         /// <param name="other">A <see cref="UInt32"/> representation of a hexadecimal color (#RRGGBB format) to compare with the current <see cref="HexColor"/>.</param>
@@ -534,6 +546,18 @@ namespace System.Windows.Media.Hex
                 hash = hash * 23 + A.GetHashCode();
                 return hash;
             }
+        }
+
+        /// <summary>
+        /// Compares the current <see cref="HexColor"/> object with the specified <see cref="Color"/> object and returns an integer that indicates whether the current object is less than, equal to, or greater than the specified object in terms of their <see cref="string"/> representations.
+        /// </summary>
+        /// <param name="color">The <see cref="Color"/> object to compare with the current <see cref="HexColor"/> object.</param>
+        /// <returns>
+        /// A signed integer that indicates the relative order of the <see cref="HexColor"/> and <see cref="Color"/> objects in terms of their string representations.
+        /// </returns>
+        public int CompareTo(Color color)
+        {
+            return Code.CompareTo(color.ToString());
         }
 
         /// <summary>
