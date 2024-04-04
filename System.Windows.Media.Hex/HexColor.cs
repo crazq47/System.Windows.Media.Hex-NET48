@@ -702,6 +702,23 @@ namespace System.Windows.Media.Hex
         }
 
         /// <summary>
+        /// Converts the <see cref="HexColor"/> to an array of <see cref="byte"/> representing the color components.
+        /// </summary>
+        /// <returns>
+        /// An array of <see cref="byte"/> representing the color components in the order of alpha (if present), red, green, and blue.
+        /// </returns>
+        /// <remarks>
+        /// This method converts the hexadecimal color code to the sRGB color space and then to the sRGB color space.
+        /// </remarks>
+        public byte[] ToBytes()
+        {
+            if (HexCode.IsHexColorWithAlpha(Code))
+                return new byte[4] { ScRgbToSrgb(A), ScRgbToSrgb(R), ScRgbToSrgb(G), ScRgbToSrgb(B) };
+
+            return new byte[3] { ScRgbToSrgb(R), ScRgbToSrgb(G), ScRgbToSrgb(B) };
+        }
+
+        /// <summary>
         /// Converts the current <see cref="HexColor"/> to a shorter representation, if applicable.
         /// </summary>
         /// <remarks>
@@ -971,6 +988,23 @@ namespace System.Windows.Media.Hex
         public static implicit operator HexColor(float[] values)
         {
             return FromValues(values);
+        }
+
+        /// <summary>
+        /// Implicitly converts an array of <see cref="byte"/> to a <see cref="HexColor"/>.
+        /// </summary>
+        /// <param name="values">The array of <see cref="byte"/> representing the color components.</param>
+        /// <returns>A <see cref="HexColor"/> instance initialized with the provided color components.</returns>
+        /// <remarks>
+        /// If the length of the array is 3, the method assumes that the color is in RGB format.
+        /// If the length of the array is 4, the method assumes that the color is in sRGB format.
+        /// </remarks>
+        public static implicit operator HexColor(byte[] values)
+        {
+            if (values.Length == 3)
+                return FromRgb(values[0], values[1], values[2]);
+
+            return FromSrgb(values[0], values[1], values[2], values[3]);
         }
 
         /// <summary>
