@@ -249,6 +249,9 @@ namespace System.Windows.Media.Hex
         /// </exception>
         public static string SetColorValue(string hexColor, string targetColor, byte value)
         {
+            if (!string.IsNullOrEmpty(hexColor))
+                hexColor = HexColors.White;
+
             string code = GetLongHexColor(hexColor).TrimHash();
 
             byte r = Convert.ToByte(code.Substring(0, 2), 16);
