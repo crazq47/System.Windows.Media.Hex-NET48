@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
 
 namespace System.Windows.Media.Hex
 {
@@ -84,6 +83,10 @@ namespace System.Windows.Media.Hex
         /// </summary>
         public static readonly HexColor Null = new HexColor((string)null);
         /// <summary>
+        /// Represents transparent hexadecimal color code.
+        /// </summary>
+        public static readonly HexColor None = HexColors.Transparent;
+        /// <summary>
         /// Represents empty hexadecimal color code.
         /// </summary>
         public static readonly HexColor Empty;
@@ -94,7 +97,7 @@ namespace System.Windows.Media.Hex
         /// <param name="hexValue">The hexadecimal color code (with or without the '#' prefix).</param>
         public HexColor(string hexValue)
         {
-            this.Code = hexValue.ToUpper();
+            this.Code = hexValue.ToCode();
         }
 
         /// <summary>
@@ -358,7 +361,7 @@ namespace System.Windows.Media.Hex
 
             foreach (string word in words)
             {
-                if (HexCode.IsHexColorCode(word))
+                if (HexCode.IsHexColor(word))
                     return new HexColor(word.ToUpper());
             }
 
@@ -366,27 +369,39 @@ namespace System.Windows.Media.Hex
         }
 
         /// <summary>
-        /// Finds and returns all hexadecimal color codes in the given input <see cref="string"/>.
+        /// Finds and returns all <see cref="HexColor"/> in the given input <see cref="string"/> using the specified <see cref="char"/> array as delimiters.
         /// </summary>
-        /// <param name="input">The input string to search for hexadecimal color codes.</param>
-        /// <returns>An array containing all hexadecimal color codes found in the input string.</returns>
+        /// <param name="input">The input string to search for <see cref="HexColor"/>.</param>
+        /// <param name="searchArray">The input string to search for <see cref="HexColor"/>.</param>
+        /// <returns>An array containing all <see cref="HexColor"/> found in the input <see cref="string"/> .</returns>
         /// <exception cref="ArgumentNullException">Thrown when the input string is <see langword="null"/>.</exception>
-        public static HexColor[] FindAllHexColors(string input)
+        public static HexColor[] FindAllHexColors(string input, char[] searchArray)
         {
             if (string.IsNullOrEmpty(input))
                 throw new ArgumentException("Input string cannot be null or empty.", nameof(input));
 
             List<HexColor> hexColors = new List<HexColor>();
-            string[] words = input.Split(HexCode.SearchCharArray(), 
+            string[] words = input.Split(searchArray,
                 StringSplitOptions.RemoveEmptyEntries);
 
             foreach (string word in words)
             {
-                if (HexCode.IsHexColorCode(word))
+                if (HexCode.IsHexColor(word))
                     hexColors.Add(new HexColor(word.ToUpper()));
             }
 
             return hexColors.ToArray();
+        }
+
+        /// <summary>
+        /// Finds and returns all <see cref="HexColor"/> in the given input <see cref="string"/>.
+        /// </summary>
+        /// <param name="input">The input <see cref="string"/> to search for <see cref="HexColor"/>.</param>
+        /// <returns>An array containing all <see cref="HexColor"/> found in the input <see cref="string"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when the input string is <see langword="null"/>.</exception>
+        public static HexColor[] FindAllHexColors(string input)
+        {
+            return FindAllHexColors(input, HexCode.SearchCharArray());
         }
 
         /// <summary>
@@ -657,7 +672,7 @@ namespace System.Windows.Media.Hex
         /// </exception>
         public Color ToColor()
         {
-            if (!HexCode.IsHexColorCode(Code))
+            if (!HexCode.IsHexColor(Code))
                 throw new InvalidHexColorFormatException();
 
             string code = Code.TrimHash();

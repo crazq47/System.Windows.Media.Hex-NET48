@@ -1,6 +1,7 @@
 ﻿#define NETFRAMEWORK
 
 using System;
+using System.Security.Policy;
 
 namespace System.Windows.Media.Hex
 {
@@ -21,6 +22,29 @@ namespace System.Windows.Media.Hex
 
             return input.TrimStart(HexCode.Hash);
         }
+
+        /// <summary>
+        /// Adds the '#' character at the beginning of the input string.
+        /// </summary>
+        /// <param name="input">The input string to process.</param>
+        /// <returns>A <see langword="new"/> <see langword="string"/> with the '#' character added at the beginning.</returns>
+        public static string AddHash(this string input)
+        {
+            return HexCode.Hash + input;
+        }
+
+        internal static string ToCode(this string input)
+        {
+            if (HexCode.IsNone(input))
+                return (string)HexColor.None;
+
+            string code = input.ToUpper();
+            int l = input.Length;
+            if (l == 6 || l == 8 || l == 3)
+                code.AddHash();
+
+            return code;
+        }
     }
 
     /// <summary>
@@ -36,7 +60,7 @@ namespace System.Windows.Media.Hex
         /// <returns>A <see cref="Color"/> object representing the specified hexadecimal color code, or the original color if the conversion fails.</returns>
         public static Color FromString(this Color color, string hexCode)
         {
-            if (!HexCode.IsHexColorCode(hexCode))
+            if (!HexCode.IsHexColor(hexCode))
                 return color;
 
             byte a = HexCode.GetAlphaValue(hexCode);
@@ -55,7 +79,7 @@ namespace System.Windows.Media.Hex
         /// <returns>A <see cref="Color"/> object representing the specified <see cref="HexColor"/> object.</returns>
         public static Color FromHexColor(this Color color, HexColor hexColor)
         {
-            if (!HexCode.IsHexColorCode(hexColor.ToString()))
+            if (!HexCode.IsHexColor(hexColor.ToString()))
                 return color;
 
             return Color.FromArgb(hexColor.A, hexColor.R, hexColor.G, hexColor.B);

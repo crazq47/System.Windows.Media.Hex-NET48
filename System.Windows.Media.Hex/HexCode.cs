@@ -53,7 +53,7 @@ namespace System.Windows.Media.Hex
         /// </exception>
         public static byte GetColorValue(string hexColor, string targetColor)
         {
-            if (!IsHexColorCode(hexColor))
+            if (!IsHexColor(hexColor))
                 throw new InvalidHexColorFormatException();
 
             string code = GetLongHexColor(hexColor).TrimHash();
@@ -90,7 +90,7 @@ namespace System.Windows.Media.Hex
         public static string GetFillColor(string hexColor)
         {
             string code = hexColor.TrimHash();
-            if (IsHexColorCode(hexColor))
+            if (IsHexColor(hexColor))
                 return $"{Hash}{code.Substring(code.Length - GetFillColorLenght(hexColor))}";
 
             return null;
@@ -114,7 +114,7 @@ namespace System.Windows.Media.Hex
         public static int GetHexLenght(string hexColor)
         {
             string code = hexColor.TrimHash();
-            if (IsHexColorCode(code))
+            if (IsHexColor(code))
                 return code.Length;
 
             return -1;
@@ -140,7 +140,7 @@ namespace System.Windows.Media.Hex
         /// </exception>
         public static string GetShortHexColor(string hexColor)
         {
-            if (!IsHexColorCode(hexColor))
+            if (!IsHexColor(hexColor))
                 throw new InvalidHexColorFormatException();
 
             string code = hexColor.TrimHash();
@@ -177,7 +177,7 @@ namespace System.Windows.Media.Hex
         /// </exception>
         public static string GetLongHexColor(string hexColor)
         {
-            if (!IsHexColorCode(hexColor))
+            if (!IsHexColor(hexColor))
                 throw new InvalidHexColorFormatException();
 
             string longcode = new string(hexColor.TrimHash().Select(c => new string(c, 2)).SelectMany(s => s).ToArray());
@@ -323,7 +323,7 @@ namespace System.Windows.Media.Hex
         /// <exception cref="NullOrEmptyHexColorException">
         /// Thrown when the input <paramref name="code"/> is <see langword="null"/> or empty.
         /// </exception>
-        public static bool IsHexColorCode(string code)
+        public static bool IsHexColor(string code)
         {
             if (string.IsNullOrEmpty(code))
                 throw new NullOrEmptyHexColorException(nameof(code));
@@ -344,13 +344,37 @@ namespace System.Windows.Media.Hex
         }
 
         /// <summary>
+        /// Checks if the input hexadecimal color code represents a color other than transparent black.
+        /// </summary>
+        /// <param name="code">The hexadecimal color code to check.</param>
+        /// <returns><see langword="true"/> if the color code represents a color other than transparent black, otherwise <see langword="false"/>.</returns>
+        public static bool HasColor(string code)
+        {
+            string color = code.TrimHash();
+            if (HasAlpha(code) && color.StartsWith("00"))
+                return false;
+
+            return code.ToLower() != "none";
+        }
+
+        /// <summary>
+        /// Checks if the input hexadecimal color code represents the absence of color.
+        /// </summary>
+        /// <param name="code">The hexadecimal color code to check.</param>
+        /// <returns><see langword="true"/> if the color code represents the absence of color, otherwise <see langword="false"/>.</returns>
+        public static bool IsNone(string code)
+        {
+            return code.ToLower() == "none";
+        }
+
+        /// <summary>
         /// Checks whether a given hexadecimal color code includes an alpha (transparency) component.
         /// </summary>
         /// <param name="code">The hexadecimal color code.</param>
         /// <returns><see langword="true"/> if the color code includes an alpha component; otherwise, <see langword="false"/>.</returns>
         public static bool IsHexColorWithAlpha(string code)
         {
-            if (IsHexColorCode(code))
+            if (IsHexColor(code))
                 return HasAlpha(code);
 
             return false;
@@ -363,7 +387,7 @@ namespace System.Windows.Media.Hex
         /// <returns><see langword="true"/> if the color code is in the short form; otherwise, <see langword="false"/>.</returns>
         public static bool IsShortHexColor(string code)
         {
-            if (IsHexColorCode(code))
+            if (IsHexColor(code))
                 return code.TrimHash().Length == 3;
 
             return false;
@@ -380,7 +404,7 @@ namespace System.Windows.Media.Hex
 
             if (IsHexColorWithAlpha(code))
                 return code.Substring(2).Length;
-            else if (IsHexColorCode(code))
+            else if (IsHexColor(code))
                 return code.Length;
 
             return -1;

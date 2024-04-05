@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные со сборкой.
 [assembly: AssemblyTitle("System.Windows.Media.Hex")]
-[assembly: AssemblyDescription("Library for working with HexColor")]
+[assembly: AssemblyDescription("Library for working with hexadecimal colors.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Crazq`s Softwere")]
 [assembly: AssemblyProduct("System.Windows.Media.Hex")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyVersion("1.0.2.0")]
+[assembly: AssemblyFileVersion("1.0.2.0")]
